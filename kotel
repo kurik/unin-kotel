@@ -1,0 +1,95 @@
+#!/bin/bash
+
+RELAY_A=24
+RELAY_B=23
+RELAY_C=17
+RELAY_D=22
+
+GPIO_PATH="/sys/class/gpio/"
+
+function is_initialized {
+    if [[ -d ${GPIO_PATH}/gpio${RELAY_A} ]]; then
+        if [[ -d ${GPIO_PATH}/gpio${RELAY_B} ]]; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+function initialize {
+    # If we are already did the initialization, then ignore this
+    if is_initialized; then
+        return 0
+    fi
+
+    # Initialize the relay ports
+    (echo ${RELAY_A} > ${GPIO_PATH}/export) 2> /dev/null
+    (echo ${RELAY_B} > ${GPIO_PATH}/export) 2> /dev/null
+
+    echo out > ${GPIO_PATH}/gpio${RELAY_A}/direction
+    echo out > ${GPIO_PATH}/gpio${RELAY_B}/direction
+}
+
+function start_kotel {
+    echo 1 > ${GPIO_PATH}/gpio${RELAY_A}/value
+    echo 1 > ${GPIO_PATH}/gpio${RELAY_B}/value
+}
+
+function stop_kotel {
+    echo 1 > ${GPIO_PATH}/gpio${RELAY_A}/value
+    echo 0 > ${GPIO_PATH}/gpio${RELAY_B}/value
+}
+
+function manual_kotel {
+    echo 0 > ${GPIO_PATH}/gpio${RELAY_A}/value
+    echo 0 > ${GPIO_PATH}/gpio${RELAY_B}/value
+}
+
+function status_kotel {
+    A=$(cat ${GPIO_PATH}/gpio${RELAY_A}/value)
+    B=$(cat ${GPIO_PATH}/gpio${RELAY_B}/value)
+
+    if [[ ${B} -ne 0 ]]; then
+            echo "started"
+            return 0
+    fi
+    if [[ ${A} -ne 0 ]]; then
+            echo "stopped"
+            return 0
+    fi
+    echo "manual"
+    return 0
+}
+
+function print_help {
+    echo "Usage:"
+    echo "  $(basename $0) start|stop|manual|status"
+}
+
+# Parse arguments
+while [[ $# -ne 0 ]]; do
+    case $1 in
+        start*)
+            initialize
+            start_kotel
+            ;;
+        stop*)
+            initialize
+            stop_kotel
+            ;;
+        manual)
+            initialize
+            manual_kotel
+            ;;
+        status)
+            initialize
+            status_kotel
+            ;;
+        *)
+            print_help
+            exit 1
+            ;;
+    esac
+    shift
+    exit 0
+done

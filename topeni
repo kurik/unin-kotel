@@ -1,0 +1,62 @@
+#!/bin/bash
+
+KOTELPATH='/root/bin'
+
+DRYRUN=''
+LOW=''
+HIGH=''
+
+function print_help {
+    echo "Usage:"
+    echo "  $(basename $0) [-h|-d] <low> <high>"
+    echo "        -h ... pront this help"
+    echo "        -d ... dry run; just tell me what you wanna do"
+    echo "       low ... the low temperature limit"
+    echo "      high ... the upper temperature limit"
+}
+
+# Parse arguments
+while [[ $# -ne 0 ]]; do
+    case $1 in
+        -h)
+            print_help
+            exit 0
+            ;;
+        -d|--dry)
+            DRYRUN='YES'
+            ;;
+        *)
+            [[ -z "${LOW}" ]] && LOW="$1" || HIGH="$1"
+            ;;
+    esac
+    shift
+done
+
+[[ -z "${HIGH}" ]] && { echo "Invalid arguments"; print_help; exit 1; }
+
+STATUS="$( ${KOTELPATH}/kotel status)" || { echo 'Error getting the current kotel status'; exit 1; }
+
+[[ "${STATUS}" = "manual" ]] && { echo "Giving up as the kotel is in manual status"; exit 1; }
+
+CURRENT="$( ${KOTELPATH}/current)" || { echo 'Error getting the current kotel temperature'; exit 1; }
+T=$(( ${CURRENT} / 1000 )) || { echo "Error converting temperature"; exit 1; }
+
+NEWSTATUS=''
+[[ ${T} -ge ${HIGH} ]] && NEWSTATUS='stopped'
+[[ ${T} -lt ${LOW} ]] && NEWSTATUS='started'
+
+echo Temp: $T
+echo Newstatus: $NEWSTATUS
+echo Status: $STATUS
+echo Low: $LOW
+echo High: $HIGH
+
+[[ -z "${NEWSTATUS}" ]] && { echo "Nothing to do"; exit 0; }
+[[ "${NEWSTATUS}" = "${STATUS}" ]] && { echo "Kotel already in required state"; exit 0; }
+
+echo "Switching kotel to status ${NEWSTATUS}"
+[[ -z "${DRYRUN}" ]] || exit 0
+
+${KOTELPATH}/kotel ${NEWSTATUS}
+
+
