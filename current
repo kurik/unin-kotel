@@ -1,5 +1,11 @@
 #!/bin/bash
 
-/usr/bin/ssh root@sensor 'sqlite3 var/unin_temperature.db "SELECT MAX(temperature.stamp), sensor.sensorid, temperature.temperature FROM temperature, sensor WHERE sensor.oid = temperature.sensor GROUP BY sensor.sensorid"|grep "28-000001b4754f"|cut -d "|" -f 3|cut -d "." -f 1'
+TEMP=$(/usr/bin/ssh root@sensor 'sqlite3 var/unin_temperature.db "SELECT MAX(temperature.stamp), sensor.sensorid, temperature.temperature FROM temperature, sensor WHERE sensor.oid = temperature.sensor GROUP BY sensor.sensorid"') || exit 1
+#echo T1: "${TEMP}"
 
-exit $?
+TEMP=$(echo "${TEMP}" | grep "28-000001b4754f") || exit 1
+#echo T2: ${TEMP}
+
+echo "${TEMP}" | cut -d "|" -f 3 | cut -d "." -f 1
+
+exit 0
