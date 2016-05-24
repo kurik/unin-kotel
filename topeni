@@ -9,7 +9,7 @@ HIGH=''
 function print_help {
     echo "Usage:"
     echo "  $(basename $0) [-h|-d] <low> <high>"
-    echo "        -h ... pront this help"
+    echo "        -h ... print this help"
     echo "        -d ... dry run; just tell me what you wanna do"
     echo "       low ... the low temperature limit"
     echo "      high ... the upper temperature limit"
