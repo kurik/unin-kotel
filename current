@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEMP=$(/usr/bin/ssh root@sensor 'sqlite3 var/unin_temperature.db "SELECT MAX(temperature.stamp), sensor.sensorid, temperature.temperature FROM temperature, sensor WHERE sensor.oid = temperature.sensor GROUP BY sensor.sensorid"') || exit 1
+TEMP=$(/usr/bin/ssh root@sensor 'sqlite3 /home/temp_measure/var/unin_temperature.db "SELECT MAX(temperature.stamp), sensor.sensorid, temperature.temperature FROM temperature, sensor WHERE sensor.oid = temperature.sensor GROUP BY sensor.sensorid"') || exit 1
 #echo T1: "${TEMP}"
 
 TEMP=$(echo "${TEMP}" | grep "28-000001b4754f") || exit 1
