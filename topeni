@@ -44,6 +44,7 @@ T=$(( ${CURRENT} / 1000 )) || { echo "Error converting temperature"; exit 1; }
 NEWSTATUS=''
 [[ ${T} -ge ${HIGH} ]] && NEWSTATUS='stopped'
 [[ ${T} -lt ${LOW} ]] && NEWSTATUS='started'
+[[ -z "${NEWSTATUS}" ]] && NEWSTATUS="${STATUS}"
 
 echo Temp: $T
 echo Newstatus: $NEWSTATUS
@@ -51,7 +52,6 @@ echo Status: $STATUS
 echo Low: $LOW
 echo High: $HIGH
 
-[[ -z "${NEWSTATUS}" ]] && { echo "Nothing to do"; exit 0; }
 [[ "${NEWSTATUS}" = "${STATUS}" ]] && { echo "Kotel already in required state"; exit 0; }
 
 echo "Switching kotel to status ${NEWSTATUS}"
