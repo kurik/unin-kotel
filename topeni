@@ -42,7 +42,7 @@ CURRENT="$( ${KOTELPATH}/current)" || { echo 'Error getting the current kotel te
 T=$(( ${CURRENT} / 1000 )) || { echo "Error converting temperature"; exit 1; }
 
 NEWSTATUS=''
-[[ ${T} -ge ${HIGH} ]] && NEWSTATUS='stopped'
+[[ ${T} -gt ${HIGH} ]] && NEWSTATUS='stopped'
 [[ ${T} -lt ${LOW} ]] && NEWSTATUS='started'
 [[ -z "${NEWSTATUS}" ]] && NEWSTATUS="${STATUS}"
 
