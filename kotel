@@ -66,30 +66,27 @@ function print_help {
     echo "  $(basename $0) start|stop|manual|status"
 }
 
-# Parse arguments
-while [[ $# -ne 0 ]]; do
-    case $1 in
-        start*)
-            initialize
-            start_kotel
-            ;;
-        stop*)
-            initialize
-            stop_kotel
-            ;;
-        manual)
-            initialize
-            manual_kotel
-            ;;
-        status)
-            initialize
-            status_kotel
-            ;;
-        *)
-            print_help
-            exit 1
-            ;;
-    esac
-    shift
-    exit 0
-done
+# Parse argument
+case "$1" in
+    start*)
+        initialize
+        start_kotel
+        ;;
+    stop*)
+        initialize
+        stop_kotel
+        ;;
+    manual)
+        initialize
+        manual_kotel
+        ;;
+    ""|status)
+        initialize
+        status_kotel
+        ;;
+    *)
+        print_help
+        exit 1
+        ;;
+esac
+exit 0
