@@ -45,9 +45,12 @@ while [[ $# -ne 0 ]]; do
     shift
 done
 
+NUMRE='^[-0-9]+$'
+
 while true; do
     STATUS="$( ${KOTELPATH}/kotel status)" || { echo 'Error getting the current kotel status'; exit 1; }
     CURRENT="$( ${KOTELPATH}/current)" || { echo 'Error getting the current kotel temperature'; exit 1; }
+    [[ ${CURRENT} =~ ${NUMRE} ]] || { echo "Invalid value received as a temperature >>${CURRENT}<<"; exit 1; }
     T=$(( ${CURRENT} / 1000 )) || { echo "Error converting temperature"; exit 1; }
 
     NEWSTATUS=''
