@@ -2,10 +2,11 @@
 
 NC="/usr/bin/netcat"
 SENSOR="28-000001b4754f"
+TIMEOUT="10"
 
 [[ -n "${1}" ]] && SENSOR="${1}"
 
-echo "${SENSOR}" | "${NC}" sensor 9999 || exit 1
+echo "${SENSOR}" | "${NC}" -i ${TIMEOUT} -w ${TIMEOUT} sensor 9999 || exit 1
 
 exit 0
 #EOF
