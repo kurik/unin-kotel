@@ -6,7 +6,7 @@ TIMEOUT="10"
 
 [[ -n "${1}" ]] && SENSOR="${1}"
 
-echo "${SENSOR}" | "${NC}" -i ${TIMEOUT} -w ${TIMEOUT} sensor 9999 || exit 1
+echo "${SENSOR}" | timeout ${TIMEOUT}s "${NC}" -i ${TIMEOUT} -w ${TIMEOUT} sensor 9998 || exit 1
 
 exit 0
 #EOF
