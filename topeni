@@ -59,16 +59,18 @@ while true; do
     [[ -z "${NEWSTATUS}" ]] && NEWSTATUS="${STATUS}"
 
     date "+%Y-%m-%d %H:%M:%S"
-    echo Temp: $T
-    echo Newstatus: $NEWSTATUS
-    echo Status: $STATUS
-    echo Low: $LOW
-    echo High: $HIGH
+    echo Temp: $T"."$(echo $CURRENT | tail -c 3)
+    echo Range: $LOW".00" " - " $HIGH".99"
+    if [[ "$NEWSTATUS" = "$STATUS" ]]; then
+        echo Status: $STATUS
+    else
+        echo Status: $STATUS " -> " $NEWSTATUS
+    fi
 
     if [[ "${NEWSTATUS}" = "${STATUS}" ]]; then
-        echo "Kotel already in required state"
+        : #echo "Kotel already in required state"
     else
-        echo "Switching kotel to status ${NEWSTATUS}"
+        # echo "Switching kotel to status ${NEWSTATUS}"
         [[ -z "${DRYRUN}" ]] && \
             ${KOTELPATH}/kotel ${NEWSTATUS} || \
             echo "Dry run: ${KOTELPATH}/kotel ${NEWSTATUS}"
