@@ -3,10 +3,25 @@
 NC="/usr/bin/netcat"
 SENSOR="28-000001b4754f"
 TIMEOUT="10"
+RETRIES=21
 
 [[ -n "${1}" ]] && SENSOR="${1}"
 
-echo "${SENSOR}" | timeout ${TIMEOUT}s "${NC}" -i ${TIMEOUT} -w ${TIMEOUT} sensor 9998 || exit 1
+function get_temp() {
+    echo "${SENSOR}" | timeout ${TIMEOUT}s "${NC}" -i ${TIMEOUT} -w ${TIMEOUT} sensor 9998 || return 1
+    return 0
+}
 
-exit 0
+TEMP=""
+while [[ ${RETRIES} -gt 0 ]]; do
+    RETRIES=$(( ${RETRIES} - 1 ))
+    if TEMP=$(get_temp); then
+        if [[ ${TEMP} =~ ^-?[0-9]+$ ]]; then
+            echo "${TEMP}"
+            exit 0
+        fi
+    fi
+done
+
+exit 1
 #EOF
