@@ -1,0 +1,45 @@
+#!/bin/bash
+
+function print_help {
+    echo "Usage:"
+    echo "  $(basename $0) [-h] [-i interval] <time>"
+    echo "        -h ... print this help and exit"
+    echo "        -i ... polling interval in seconds (default is 1)"
+    echo "      time ... time in a form YYYY-MM-DDThh:mm"
+}
+
+# Parse arguments
+INTERVAL=1
+while [[ $# -ne 0 ]]; do
+    case ${1} in
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        -i|--interval)
+            shift
+            INTERVAL="${1}"
+            ;;
+        [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]*)
+            TIMESTAMP="$(echo ${1} | cut -c -16)"
+            ;;
+        *)
+            echo "Invalid parameter ${1}"
+            exit 1
+            ;;
+    esac
+    shift
+done
+[[ -z "${TIMESTAMP}" ]] && { echo "Missing valid timestamp"; exit 1; }
+
+
+function kolikje () {
+    TZ='Europe/Prague' date -Iminutes | cut -d + -f 1
+    return 0
+}
+
+while [[ "$(kolikje)" < "${TIMESTAMP}" ]]; do
+    sleep ${INTERVAL}
+done
+
+exit 0
