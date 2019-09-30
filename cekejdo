@@ -5,7 +5,10 @@ function print_help {
     echo "  $(basename $0) [-h] [-i interval] <time>"
     echo "        -h ... print this help and exit"
     echo "        -i ... polling interval in seconds (default is 1)"
-    echo "      time ... time in a form YYYY-MM-DDThh:mm"
+    echo "      time ... time in following formats:"
+    echo "                 YYYY-MM-DDThh:mm"
+    echo "                 hh:mm"
+    echo "                 YYYY-MM-DD"
 }
 
 # Parse arguments
@@ -19,6 +22,12 @@ while [[ $# -ne 0 ]]; do
         -i|--interval)
             shift
             INTERVAL="${1}"
+            ;;
+        [0-9][0-9]:[0-9][0-9]*)
+            TIMESTAMP="$(echo $(date +%Y-%m-%d)T${1} | cut -c -16)"
+            ;;
+        [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
+            TIMESTAMP="${1}T00:00"
             ;;
         [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]*)
             TIMESTAMP="$(echo ${1} | cut -c -16)"
