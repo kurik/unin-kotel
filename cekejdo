@@ -48,7 +48,7 @@ done
 
 function kolikje () {
     TZ='Europe/Prague' tedje=$(date -Iminutes | cut -d + -f 1)
-    [[ -n "${VERBOSE}" ]] && echo -e "Ted je: ${tedje}\nCekam na: ${TIMESTAMP}\n" 1>&2
+    [[ -n "${VERBOSE}" ]] && echo -e "Ted je:   ${tedje}\nCekam na: ${TIMESTAMP}\n" 1>&2
     echo "${tedje}"
     return 0
 }
