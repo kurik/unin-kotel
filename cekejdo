@@ -5,6 +5,7 @@ function print_help {
     echo "  $(basename $0) [-h] [-i interval] <time>"
     echo "        -h ... print this help and exit"
     echo "        -i ... polling interval in seconds (default is 1)"
+    echo "        -v ... be verbose (say what you are doing)"
     echo "      time ... time in following formats:"
     echo "                 YYYY-MM-DDThh:mm"
     echo "                 hh:mm"
@@ -12,12 +13,16 @@ function print_help {
 }
 
 # Parse arguments
-INTERVAL=1
+INTERVAL=58
+VERBOSE=""
 while [[ $# -ne 0 ]]; do
     case ${1} in
         -h|--help)
             print_help
             exit 0
+            ;;
+        -v|--verbose)
+            VERBOSE=1
             ;;
         -i|--interval)
             shift
@@ -41,9 +46,10 @@ while [[ $# -ne 0 ]]; do
 done
 [[ -z "${TIMESTAMP}" ]] && { echo "Missing valid timestamp"; exit 1; }
 
-
 function kolikje () {
-    TZ='Europe/Prague' date -Iminutes | cut -d + -f 1
+    TZ='Europe/Prague' tedje=$(date -Iminutes | cut -d + -f 1)
+    [[ -n "${VERBOSE}" ]] && echo -e "Ted je: ${tedje}\nCekam na: ${TIMESTAMP}\n" 1>&2
+    echo "${tedje}"
     return 0
 }
 
