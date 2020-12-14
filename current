@@ -1,14 +1,15 @@
 #!/bin/bash
 
 NC="/usr/bin/netcat"
-SENSOR="28-000001b4754f"
+#SENSOR="28-000001b4754f"
+SENSOR=28-000001b4337c
 TIMEOUT="10"
 RETRIES=21
 
 [[ -n "${1}" ]] && SENSOR="${1}"
 
 function get_temp() {
-    echo "${SENSOR}" | timeout ${TIMEOUT}s "${NC}" -i ${TIMEOUT} -w ${TIMEOUT} sensor 9998 || return 1
+    echo "${SENSOR}" | timeout ${TIMEOUT}s "${NC}" -w ${TIMEOUT} sensor 9998 || return 1
     return 0
 }
 

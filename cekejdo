@@ -10,6 +10,7 @@ function print_help {
     echo "                 YYYY-MM-DDThh:mm"
     echo "                 hh:mm"
     echo "                 YYYY-MM-DD"
+    echo "                 zitraThh:mm"
 }
 
 # Parse arguments
@@ -30,6 +31,13 @@ while [[ $# -ne 0 ]]; do
             ;;
         [0-9][0-9]:[0-9][0-9]*)
             TIMESTAMP="$(echo $(date +%Y-%m-%d)T${1} | cut -c -16)"
+            ;;
+        zitraT[0-9][0-9]:[0-9][0-9]*|tomorrowT[0-9][0-9]:[0-9][0-9]*)
+            TIMESTAMP="$(echo $(date +%Y-%m-%d -d tomorrow)T${1} | cut -c -16)"
+            TIMESTAMP=$(echo "${1}" | \
+                sed -e "s/zitra/"$(date +%Y-%m-%d -d tomorrow)"/g" \
+                    -e "s/tomorrow/"$(date +%Y-%m-%d -d tomorrow)"/g" | \
+                cut -c -16)
             ;;
         [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])
             TIMESTAMP="${1}T00:00"

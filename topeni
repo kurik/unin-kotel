@@ -1,6 +1,7 @@
 #!/bin/bash
 
-KOTELPATH='/root/bin'
+#KOTELPATH='/root/bin'
+KOTELPATH='/root/unin-kotel'
 
 DRYRUN=''
 LOW='23'
